@@ -1,24 +1,18 @@
-FROM node:23.8-bullseye AS build
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-
-RUN npm install 
-
-COPY . .
-
-
+# Use Node.js base image
 FROM node:23.8-bullseye
 
+# Set working directory inside the container
 WORKDIR /app
 
-COPY --from=build /app/dist /app/dist
-
+# Copy package.json and package-lock.json and install dependencies
 COPY package.json package-lock.json ./
+RUN npm install
 
-RUN npm install --omit=dev 
+# Copy the rest of the app source code
+COPY . .
 
+# Expose the app port
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+# Run the application
+CMD ["npm", "run", "dev"]
