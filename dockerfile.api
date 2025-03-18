@@ -1,0 +1,24 @@
+FROM node:23.8-bullseye AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm install 
+
+COPY . .
+
+
+FROM node:23.8-bullseye
+
+WORKDIR /app
+
+COPY --from=build /app/dist /app/dist
+
+COPY package.json package-lock.json ./
+
+RUN npm install --omit=dev 
+
+EXPOSE 3000
+
+CMD ["node", "dist/server.js"]
