@@ -1,12 +1,12 @@
 import type { Request, Response } from "express";
 import User from "../models/user.model";
 import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
 //Using Promise<any> because of No overload matches this call in the router.
 
 const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("body", req.body);
     const body = req.body;
 
     const userSearch = await User.findOne({ email: body.email });
@@ -40,8 +40,12 @@ const login = async (req: Request, res: Response): Promise<any> => {
     if (!passwordMatch) {
       return res.status(400).json({ message: "Credenciales invalidas" });
     }
-
-    res.status(200).json({ message: "Login exitoso" });
+    const access_token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET!!,
+      { expiresIn: "1h" }
+    );
+    res.status(200).json({ data: access_token, message: "Login exitoso" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Error en el servidor" });
