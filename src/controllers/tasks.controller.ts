@@ -17,7 +17,7 @@ const createTask = async (req: Request, res: Response) => {
   }
 };
 
-const getTasks = async (res: Response) => {
+const getTasks = async (req: Request, res: Response) => {
   try {
     const tasks = await Tasks.find();
     return res.status(200).json({ data: tasks, message: "Tareas encontradas" });
