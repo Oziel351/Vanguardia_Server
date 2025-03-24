@@ -18,9 +18,11 @@ const createClient = async (req: Request, res: Response) => {
   }
 };
 
-const getClients = async (res: Response) => {
+const getClients = async (req: Request, res: Response) => {
   try {
     const clients = await Clients.find();
+
+    console.log("clients", clients);
     return res
       .status(200)
       .json({ data: clients, message: "Clientes encontrados" });

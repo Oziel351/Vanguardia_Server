@@ -50,7 +50,7 @@ const updateTechnician = async (req: Request, res: Response) => {
   }
 };
 
-const getTechnicians = async (res: Response) => {
+const getTechnicians = async (req: Request, res: Response) => {
   try {
     const technisians = await Technician.find();
     return res
