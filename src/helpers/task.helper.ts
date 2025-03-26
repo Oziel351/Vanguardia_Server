@@ -1,19 +1,24 @@
 import Joi from "joi";
-import { ActionStatus, TaskType } from "../utils/enum";
+import { ActionStatus } from "../utils/enum";
 import type { ITasks } from "../models/tasks.model";
 
-const taskSchema = Joi.object({
+const taskSchema = Joi.object<ITasks>({
   title: Joi.string().required(),
   client: Joi.string().required(),
   technician: Joi.string().required(),
-  taskType: Joi.string()
-    .valid(...Object.values(TaskType))
+  installations: Joi.array()
+    .items(
+      Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        status: Joi.string()
+          .valid(...Object.values(ActionStatus))
+          .required(),
+        requestedDay: Joi.date().required(),
+      })
+    )
     .required(),
-  scheduleDate: Joi.date().required(),
   notes: Joi.string().allow("").optional(),
-  status: Joi.string()
-    .valid(...Object.values(ActionStatus))
-    .required(),
 });
 
 export const validateTask = (task: ITasks) => {

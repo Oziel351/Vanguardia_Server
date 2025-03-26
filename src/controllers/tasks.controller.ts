@@ -1,8 +1,10 @@
 import type { Request, Response } from "express";
 import { validateTask } from "../helpers/task.helper";
 import Tasks from "../models/tasks.model";
+import Clients from "../models/clients.model";
+import Technician from "../models/technisians.model";
 
-const createTask = async (req: Request, res: Response) => {
+const assignTasks = async (req: Request, res: Response) => {
   try {
     const { error, value } = validateTask(req.body);
     if (error)
@@ -10,6 +12,27 @@ const createTask = async (req: Request, res: Response) => {
 
     const task = new Tasks(value);
     await task.save();
+
+    await Clients.findByIdAndUpdate(
+      value.client,
+      {
+        $push: {
+          installations: task.installations,
+        },
+      },
+      { new: true }
+    );
+
+    await Technician.findByIdAndUpdate(
+      value.technician,
+      {
+        $push: {
+          tasks: task.installations,
+        },
+      },
+      { new: true }
+    );
+
     return res.status(201).json({ data: task, message: "Tarea creada" });
   } catch (err: any) {
     console.log(err);
@@ -62,4 +85,4 @@ const deleteTask = async (req: Request, res: Response) => {
   }
 };
 
-export { createTask, getTasks, updateTask, deleteTask };
+export { assignTasks, getTasks, updateTask, deleteTask };
