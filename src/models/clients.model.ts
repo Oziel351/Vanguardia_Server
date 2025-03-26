@@ -2,64 +2,47 @@ import { model, Schema, type Document } from "mongoose";
 import { ActionStatus, CustomerType } from "../utils/enum";
 
 export interface IClients extends Document {
-  name: string;
   contact: {
     name: string;
     phone: string;
     email: string;
+    address: string;
   };
-  address: string;
   installations: {
-    equipment: {
-      type: string;
-      model?: string;
-      serialNumber?: string;
-    }[];
-    status: ActionStatus;
-  };
-  maintenance: {
-    requestDay: Date;
+    title: string;
     description: string;
     status: ActionStatus;
-  };
+    requestedDay: Date;
+  }[];
   enable: boolean;
   customerType: CustomerType;
 }
 
 const clientsSchema = new Schema<IClients>(
   {
-    name: { type: String, required: true },
     contact: {
       name: { type: String, required: true },
       phone: { type: String, required: true },
       email: { type: String, required: true },
+      address: { type: String, required: true },
     },
-    address: { type: String, required: true },
     installations: {
-      equipment: [
+      type: [
         {
-          type: { type: String, required: true },
-          model: { type: String },
-          serialNumber: { type: String },
+          title: { type: String, required: true },
+          description: { type: String },
+          status: {
+            type: String,
+            enum: ActionStatus,
+            required: true,
+            default: ActionStatus.PENDING,
+          },
+          requestedDay: { type: Date, required: true },
         },
       ],
-      status: {
-        type: String,
-        enum: ActionStatus,
-        required: true,
-        default: ActionStatus.PENDING,
-      },
+      default: [], //Is going to assign the installations in task module
     },
-    maintenance: {
-      requestDay: { type: Date, required: true },
-      description: { type: String, required: true },
-      status: {
-        type: String,
-        enum: ActionStatus,
-        required: true,
-        default: ActionStatus.PENDING,
-      },
-    },
+
     enable: { type: Boolean, default: true },
     customerType: {
       type: String,
