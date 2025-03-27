@@ -19,7 +19,7 @@ const createClient = async (req: Request, res: Response) => {
 
 const getClients = async (req: Request, res: Response) => {
   try {
-    const clients = await Clients.find();
+    const clients = await Clients.find().sort({ createdAt: -1 });
 
     return res
       .status(200)

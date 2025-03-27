@@ -14,7 +14,7 @@ const taskSchema = Joi.object<ITasks>({
         status: Joi.string()
           .valid(...Object.values(ActionStatus))
           .required(),
-        requestedDay: Joi.date().required(),
+        requestedDay: Joi.date().required().default(new Date()),
       })
     )
     .required(),
