@@ -33,7 +33,7 @@ const tasksSchema = new Schema<ITasks>(
           required: true,
           default: ActionStatus.PENDING,
         },
-        requestedDay: { type: Date, required: true },
+        requestedDay: { type: Date, required: true, default: Date.now() },
       },
     ],
     notes: { type: String, required: false, default: "" },

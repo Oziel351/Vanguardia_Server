@@ -52,7 +52,7 @@ const updateTechnician = async (req: Request, res: Response) => {
 
 const getTechnicians = async (req: Request, res: Response) => {
   try {
-    const technisians = await Technician.find();
+    const technisians = await Technician.find().sort({ createdAt: -1 });
     return res
       .status(200)
       .json({ data: technisians, message: "Tecnicos encontrados" });
