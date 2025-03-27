@@ -4,7 +4,6 @@ import { validateClient } from "../helpers/client.helper";
 
 const createClient = async (req: Request, res: Response) => {
   try {
-    console.log("body", req.body);
     const { error, value } = validateClient(req.body);
     if (error)
       return res.status(400).json({ message: error.details[0].message });
@@ -20,9 +19,8 @@ const createClient = async (req: Request, res: Response) => {
 
 const getClients = async (req: Request, res: Response) => {
   try {
-    const clients = await Clients.find();
+    const clients = await Clients.find().sort({ createdAt: -1 });
 
-    console.log("clients", clients);
     return res
       .status(200)
       .json({ data: clients, message: "Clientes encontrados" });
@@ -90,6 +88,7 @@ const enableClient = async (req: Request, res: Response) => {
 const deleteClient = async (req: Request, res: Response) => {
   try {
     const { deleteKey } = req.body;
+    console.log("deleteKey", deleteKey);
     if (deleteKey !== process.env.KEY_DELETE)
       return res.status(401).json({ message: "Clave incorrecta" });
 

@@ -1,14 +1,17 @@
 import { model, Schema, type Document } from "mongoose";
-import { ActionStatus, TaskType } from "../utils/enum";
+import { ActionStatus } from "../utils/enum";
 
 export interface ITasks extends Document {
   title: string;
   client: Schema.Types.ObjectId;
   technician: Schema.Types.ObjectId;
-  taskType: TaskType;
-  scheduleDate: Date;
+  installations: {
+    title: string;
+    description: string;
+    status: ActionStatus;
+    requestedDay: Date;
+  }[];
   notes?: string;
-  status: ActionStatus;
 }
 
 const tasksSchema = new Schema<ITasks>(
@@ -17,18 +20,23 @@ const tasksSchema = new Schema<ITasks>(
     client: { type: Schema.Types.ObjectId, ref: "Clients", required: true },
     technician: {
       type: Schema.Types.ObjectId,
-      ref: "Technisians",
+      ref: "Technician",
       required: true,
     },
-    taskType: { type: String, enum: TaskType, required: true },
-    scheduleDate: { type: Date, required: true },
+    installations: [
+      {
+        title: { type: String, required: true },
+        description: { type: String },
+        status: {
+          type: String,
+          enum: ActionStatus,
+          required: true,
+          default: ActionStatus.PENDING,
+        },
+        requestedDay: { type: Date, required: true, default: Date.now() },
+      },
+    ],
     notes: { type: String, required: false, default: "" },
-    status: {
-      type: String,
-      enum: ActionStatus,
-      required: true,
-      default: ActionStatus.PENDING,
-    },
   },
   { timestamps: true }
 );

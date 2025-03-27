@@ -1,10 +1,9 @@
 import { model, Schema, type Document } from "mongoose";
 import { ActionStatus } from "../utils/enum";
 
-interface ITechnisians extends Document {
+export interface ITechnicians extends Document {
   name: string;
   phone: string;
-  email: string;
   assignedTasks: [
     {
       type: Schema.Types.ObjectId;
@@ -17,11 +16,10 @@ interface ITechnisians extends Document {
   zone?: string;
 }
 
-const technisiansSchema = new Schema<ITechnisians>(
+const techniciansSchema = new Schema<ITechnicians>(
   {
     name: { type: String, required: true },
     phone: { type: String, required: true },
-    email: { type: String, required: true },
     assignedTasks: [
       {
         type: Schema.Types.ObjectId,
@@ -41,6 +39,6 @@ const technisiansSchema = new Schema<ITechnisians>(
   { timestamps: true }
 );
 
-const Technician = model<ITechnisians>("Technisians", technisiansSchema);
+const Technician = model<ITechnicians>("Technician", techniciansSchema);
 
 export default Technician;

@@ -24,14 +24,14 @@ const createTechnician = async (req: Request, res: Response) => {
 const updateTechnician = async (req: Request, res: Response) => {
   try {
     const { error, value } = validateTechnician(req.body);
-
+    const { payload } = value;
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
 
     const technisian = await Technician.findByIdAndUpdate(
       req.params.id,
-      value,
+      payload,
       {
         new: true,
       }
@@ -52,7 +52,7 @@ const updateTechnician = async (req: Request, res: Response) => {
 
 const getTechnicians = async (req: Request, res: Response) => {
   try {
-    const technisians = await Technician.find();
+    const technisians = await Technician.find().sort({ createdAt: -1 });
     return res
       .status(200)
       .json({ data: technisians, message: "Tecnicos encontrados" });
@@ -106,9 +106,10 @@ const enableTechnician = async (req: Request, res: Response) => {
 
 const deleteTechnician = async (req: Request, res: Response) => {
   try {
-    const { keyDelete } = req.body;
+    const { deleteKey } = req.body;
+    console.log(deleteKey);
 
-    if (!keyDelete || keyDelete !== process.env.KEY_DELETE) {
+    if (!deleteKey || deleteKey !== process.env.KEY_DELETE) {
       return res
         .status(400)
         .json({ message: "Clave de eliminacion incorrecta" });
