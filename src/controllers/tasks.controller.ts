@@ -43,7 +43,36 @@ const assignTasks = async (req: Request, res: Response) => {
 const getTasks = async (req: Request, res: Response) => {
   try {
     const tasks = await Tasks.find().sort({ createdAt: -1 });
-    return res.status(200).json({ data: tasks, message: "Tareas encontradas" });
+    if (!tasks || tasks.length === 0)
+      return res.status(404).json({ message: "No hay tareas" });
+
+    const clientsAndTech = await Promise.all(
+      tasks.map(async (task) => {
+        const client = await Clients.findById(task.client);
+        const technician = await Technician.findById(task.technician);
+
+        const clientName = client?.contact.name;
+        const technicianName = technician?.name;
+
+        return { clientName, technicianName };
+      })
+    );
+    const tasksWithDetails = await Promise.all(
+      tasks.map(async (task) => {
+        const client = await Clients.findById(task.client);
+        const technician = await Technician.findById(task.technician);
+
+        return {
+          ...task.toObject(),
+          client: client ? client.contact.name : null,
+          technician: technician ? technician.name : null,
+        };
+      })
+    );
+    return res.status(200).json({
+      data: tasksWithDetails,
+      message: "Tareas encontradas",
+    });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({ message: err.message });

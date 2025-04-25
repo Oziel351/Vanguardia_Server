@@ -18,7 +18,7 @@ const taskSchema = Joi.object<ITasks>({
       })
     )
     .required(),
-  notes: Joi.string().allow("").optional(),
+  notes: Joi.string().optional(),
 });
 
 export const validateTask = (task: ITasks) => {
