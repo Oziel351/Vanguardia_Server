@@ -36,7 +36,7 @@ const tasksSchema = new Schema<ITasks>(
         requestedDay: { type: Date, required: true, default: Date.now() },
       },
     ],
-    notes: { type: String, required: false, default: "" },
+    notes: { type: String, required: false, default: "N/A" },
   },
   { timestamps: true }
 );
